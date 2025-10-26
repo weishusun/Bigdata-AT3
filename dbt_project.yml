@@ -1,0 +1,27 @@
+name: 'bigdata_at3'
+version: '1.0'
+config-version: 2
+
+profile: 'default'
+
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+models:
+  bigdata_at3:
+    bronze:
+      +schema: bronze
+      +materialized: table
+    silver:
+      +schema: silver
+      +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table
+    datamarts:
+      +schema: datamarts
+      +materialized: view
+

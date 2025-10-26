@@ -1,0 +1,99 @@
+version: 2
+
+models:
+  - name: dm_listing_neighbourhood
+    description: >
+      Monthly KPIs by listing suburb (neighbourhood). Built from fact_listings joined with dim_date and dim_suburb.
+      Includes active listings rate, price stats, MoM deltas, and revenue-style approximations.
+    columns:
+      - name: listing_neighbourhood
+        description: Suburb name mapped from dim_suburb.
+        tests:
+          - not_null
+      - name: month_start
+        description: First day of the month (YYYY-MM-01) used for monthly aggregation.
+        tests:
+          - not_null
+      - name: active_listings_rate
+        description: Active listings / total listings.
+      - name: min_price_active
+        description: Min nightly price for active listings within the month.
+      - name: max_price_active
+        description: Max nightly price for active listings within the month.
+      - name: avg_price_active
+        description: Average nightly price for active listings within the month.
+      - name: distinct_hosts
+        description: Distinct host count in the period.
+      - name: pct_change_active_listings
+        description: MoM percentage change of active listings (nullable for first month or zero previous).
+      - name: pct_change_inactive_listings
+        description: MoM percentage change of inactive listings (nullable for first month or zero previous).
+      - name: total_number_of_stays
+        description: Sum over active listings of (30 - availability_30), floored at 0.
+      - name: avg_estimated_revenue_per_active_listing
+        description: total_estimated_revenue_active / active_listings.
+      - name: estimated_revenue_per_host
+        description: total_estimated_revenue_active / distinct_hosts.
+
+  - name: dm_property_type
+    description: >
+      Monthly KPIs by property_type / room_type / accommodates. Derived from fact_listings + dim_date.
+      Includes price stats, active rate, MoM deltas, and revenue approximations.
+    columns:
+      - name: property_type
+        description: Airbnb property_type from fact_listings.
+        tests:
+          - not_null
+      - name: room_type
+        description: Airbnb room_type from fact_listings.
+        tests:
+          - not_null
+      - name: accommodates
+        description: Maximum guests the listing accommodates.
+        tests:
+          - not_null
+      - name: month_start
+        description: First day of the month (YYYY-MM-01).
+        tests:
+          - not_null
+      - name: active_listings_rate
+        description: Active listings / total listings for the group-month.
+      - name: min_price_active
+        description: Min nightly price for active listings in group-month.
+      - name: max_price_active
+        description: Max nightly price for active listings in group-month.
+      - name: avg_price_active
+        description: Avg nightly price for active listings in group-month.
+      - name: pct_change_active_listings
+        description: MoM percentage change of active listings (nullable for first month or zero previous).
+      - name: pct_change_inactive_listings
+        description: MoM percentage change of inactive listings (nullable for first month or zero previous).
+      - name: total_number_of_stays
+        description: Sum over active listings of (30 - availability_30), floored at 0.
+      - name: avg_estimated_revenue_per_active_listing
+        description: total_estimated_revenue_active / active_listings.
+
+  - name: dm_host_neighbourhood
+    description: >
+      Monthly host KPIs grouped by LGA resolved from host_neighbourhood (with suburb fallback).
+      Reports distinct hosts, avg estimated revenue per active listing, and revenue per host.
+    columns:
+      - name: host_neighbourhood_lga
+        description: Final LGA name (host_neighbourhood match first, then listing suburb fallback; defaults to 'UNKNOWN').
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UNKNOWN']   
+              quote: true
+              config:
+                severity: warn
+      - name: month_start
+        description: First day of the month (YYYY-MM-01).
+        tests:
+          - not_null
+      - name: distinct_hosts
+        description: Distinct host count in the LGA-month.
+      - name: avg_estimated_revenue_per_active_listing
+        description: total_estimated_revenue_active / active_listings.
+      - name: estimated_revenue_per_host
+        description: total_estimated_revenue_active / distinct_hosts.
