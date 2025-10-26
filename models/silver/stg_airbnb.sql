@@ -9,13 +9,12 @@ with base as (
     host_since,
     host_is_superhost,
     host_neighbourhood,
-    listing_neighbourhood                    as suburb,         
+    listing_neighbourhood                    as suburb,
     property_type,
     room_type,
     accommodates::int                        as accommodates,
 
     regexp_replace(price::text, '[^0-9\.]', '', 'g')::numeric    as price,
-
 
     has_availability,
     availability_30::int                     as availability_30,
@@ -28,9 +27,10 @@ with base as (
     review_scores_value::float               as review_scores_value,
 
     to_date(scraped_date, 'YYYY-MM-DD')      as scraped_date,
-    date_trunc('month', to_date(scraped_date, 'YYYY-MM-DD'))::date as listing_date
+    date_trunc('month', to_date(scraped_date, 'YYYY-MM-DD'))::date as date_id
   from {{ source('bronze', 'airbnb_raw') }}
 )
 
 select *
 from base
+where listing_id is not null

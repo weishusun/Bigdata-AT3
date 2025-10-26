@@ -2,10 +2,50 @@ version: 2
 
 sources:
   - name: bronze
+    database: airbnb
     schema: bronze
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+    freshness:
+      warn_after: {count: 365, period: day}
+      error_after: {count: 9999, period: day}
+
     tables:
       - name: airbnb_raw
+        description: "Airbnb monthly CSV appended into bronze.airbnb_raw"
+        loaded_at_field: scraped_date
+        columns:
+          - name: listing_id
+            tests: [not_null]
+          - name: scraped_date
+            tests: [not_null]
+
       - name: census_g01_raw
+        description: "ABS 2016 G01: person characteristics by sex (population & age breakdown)"
+        columns:
+          - name: lga_code_2016
+            tests: [not_null]
+
       - name: census_g02_raw
+        description: "ABS 2016 G02: medians & averages (age, mortgage, rent, income, household size)"
+        columns:
+          - name: lga_code_2016
+            tests: [not_null]
+
       - name: lga_code_raw
+        description: "NSW LGA code-name mapping"
+        columns:
+          - name: lga_code
+            tests: [not_null]
+          - name: lga_name
+            tests: [not_null]
+
       - name: lga_suburb_raw
+        description: "NSW suburb -> LGA mapping (may contain extra unnamed cols)"
+        columns:
+          - name: suburb_name
+            tests: [not_null]
+          - name: lga_name
+            tests: [not_null]

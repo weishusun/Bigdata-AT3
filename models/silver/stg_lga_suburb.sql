@@ -5,6 +5,7 @@ with ls as (
     trim(suburb_name) as suburb,
     trim(lga_name)    as lga_name
   from {{ source('bronze', 'lga_suburb_raw') }}
+  where suburb_name is not null and suburb_name <> ''
 ),
 lc as (
   select
@@ -14,8 +15,9 @@ lc as (
 )
 select
   ls.suburb,
-  lc.lga_code
+  lc.lga_code,
+  lc.lga_name
 from ls
 left join lc
-  on lower(ls.lga_name) = lower(lc.lga_name)
-where ls.suburb is not null and ls.suburb <> ''
+  on regexp_replace(lower(ls.lga_name), '[^a-z0-9]', '', 'g')
+   = regexp_replace(lower(lc.lga_name), '[^a-z0-9]', '', 'g')
