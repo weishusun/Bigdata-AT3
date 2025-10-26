@@ -13,13 +13,12 @@ macro-paths: ["macros"]
 models:
   bigdata_at3:
     silver:
-      +schema: silver
+      +schema: bronze_silver
       +materialized: table
     gold:
-      +schema: gold
+      +schema: bronze_gold
       +materialized: table
-    datamarts:
-      +schema: datamarts
+    datamart:            
+      +schema: bronze_datamarts
       +materialized: view
-
 

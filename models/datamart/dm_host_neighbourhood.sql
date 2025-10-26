@@ -7,7 +7,7 @@ with base as (
         h.host_id,
         h.host_is_superhost,
         upper(trim(regexp_replace(h.host_neighbourhood, '\s+', ' ', 'g'))) as host_neigh_std,
-        upper(trim(regexp_replace(f.suburb,            '\s+', ' ', 'g'))) as listing_suburb_std,
+        upper(trim(regexp_replace(f.suburb, '\s+', ' ', 'g'))) as listing_suburb_std,
         f.price::numeric as price,
         f.has_availability,
         f.availability_30::int as availability_30

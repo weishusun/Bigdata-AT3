@@ -11,7 +11,7 @@ models:
         tests:
           - not_null:
               config:
-                severity: warn 
+                severity: warn
       - name: month_start
         description: First day of the month (YYYY-MM-01) used for monthly aggregation.
         tests:
@@ -84,9 +84,8 @@ models:
         description: Final LGA name (host_neighbourhood match first, then listing suburb fallback; defaults to 'UNKNOWN').
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              name: warn_if_unknown_lga_present
-              expression: "host_neighbourhood_lga != 'UNKNOWN'"
+          - no_unknown_lga:
+              column_name: host_neighbourhood_lga
               config:
                 severity: warn
       - name: month_start

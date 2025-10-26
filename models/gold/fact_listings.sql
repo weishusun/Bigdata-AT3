@@ -8,18 +8,15 @@ with f as (
     a.property_type,
     a.room_type,
     a.accommodates,
-
     a.price,
     a.has_availability,
     a.availability_30,
     a.number_of_reviews,
     a.review_rating,
-
-    a.date_id
+    a.date_id::date as date_id        
   from {{ ref('stg_airbnb') }} a
   where a.listing_id is not null
 )
-
 select
   f.listing_id,
   f.host_id,
@@ -34,5 +31,4 @@ select
   f.review_rating,
   f.date_id
 from f
-inner join {{ ref('dim_date') }} d
-  on d.date_id = f.date_id
+

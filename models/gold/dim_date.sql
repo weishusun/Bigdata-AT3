@@ -1,4 +1,5 @@
 {{ config(materialized='table') }}
+
 with d as (
   select distinct date_id
   from {{ ref('stg_airbnb') }}

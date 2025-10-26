@@ -1,6 +1,5 @@
 {{ config(materialized='table') }}
 
-
 select distinct on (a.host_id)
   a.host_id,
   a.host_name,
