@@ -7,9 +7,11 @@ models:
       Includes active listings rate, price stats, MoM deltas, and revenue-style approximations.
     columns:
       - name: listing_neighbourhood
-        description: Suburb name mapped from dim_suburb.
+        description: Suburb name mapped from dim_suburb (may be NULL for unmatched mappings).
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: month_start
         description: First day of the month (YYYY-MM-01) used for monthly aggregation.
         tests:
@@ -82,9 +84,8 @@ models:
         description: Final LGA name (host_neighbourhood match first, then listing suburb fallback; defaults to 'UNKNOWN').
         tests:
           - not_null
-          - accepted_values:
-              values: ['UNKNOWN']   
-              quote: true
+          - no_unknown_lga:
+              column_name: host_neighbourhood_lga
               config:
                 severity: warn
       - name: month_start

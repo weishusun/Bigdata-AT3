@@ -1,9 +1,14 @@
 {{ config(materialized='table') }}
 
+with d as (
+  select distinct date_id
+  from {{ ref('stg_airbnb') }}
+  where date_id is not null
+)
 select
-  listing_date                                  as date_id,
-  extract(year  from listing_date)::int         as year,
-  extract(month from listing_date)::int         as month,
-  to_char(listing_date, 'YYYY-MM')              as year_month
-from {{ ref('stg_airbnb') }}
-group by 1,2,3,4
+  d.date_id,
+  extract(year  from d.date_id)::int  as year,
+  extract(month from d.date_id)::int  as month,
+  to_char(d.date_id, 'YYYY-MM')       as year_month
+from d
+order by d.date_id
